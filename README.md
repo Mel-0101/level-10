@@ -29,5 +29,5 @@ More info about the game on BoardGameGeek: [Level 10](https://boardgamegeek.com/
 - Then you are asked how many cards and which ones you would like to exchange with cards from the deck. For that first type in a number between 0 and 2 followed by Enter and then the indices of the cards, each followed by Enter.
 <br>
 
-For the complete rules of the game please check the official rulebook: [Level 10 rules](https://s3.amazonaws.com/geekdo-files.com/bgg368385?response-content-disposition=inline%3B%20filename%3D%22Level10_Rules_ENG-_V1-OK.pdf%22&response-content-type=application%2Fpdf&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJYFNCT7FKCE4O6TA%2F20250312%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250312T105703Z&X-Amz-SignedHeaders=host&X-Amz-Expires=120&X-Amz-Signature=414f56a5c6aef12e2135d097203c95599c3e6d3f51dfbca4cf78837f55d979a0)
+For the complete rules of the game please check the official rulebook: [Level 10 rules](https://boardgamegeek.com/filepage/265573/level-10-official-english-rulebook)
 
