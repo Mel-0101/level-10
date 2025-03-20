@@ -17,7 +17,6 @@ public class UserInterface {
 
         // Erzeugen & Mischen des Nachziehstapels
         this.deck = new Deck();
-        this.deck.shuffle();
 
         // Erzeugen & Sortieren der Starthand
         this.hand = new Hand(this.deck, this.board);
@@ -29,7 +28,7 @@ public class UserInterface {
         String inputStr;
         while( true ){
             System.out.println();
-            System.out.print("Spiele eine Handkarte (Index 0...9) oder eine Reset Card (R0...R4) oder : ");
+            System.out.print("Spiele eine Handkarte (Index 0...9) oder eine Reset Card (R0...R4): ");
             inputStr = this.scan.nextLine();
             if(inputStr.strip().equalsIgnoreCase("beenden")) {
                 System.out.println("Das Spiel wird nun beendet");

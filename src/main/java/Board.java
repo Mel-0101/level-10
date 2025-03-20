@@ -2,10 +2,10 @@
 import java.io.IOException;
 
 public class Board {
-    String[][] board;
-    String[] worldString = {"☁\uFE0F", "\uD83C\uDF43", "\uD83D\uDC80", "\uD83C\uDF0B", "☀\uFE0F"};
-    final int columnNumber = 12;
-    int currentColumn = 2;
+    private final String[][] board;
+    public static final String[] WORLD_STRINGS = {"☁\uFE0F", "\uD83C\uDF43", "\uD83D\uDC80", "\uD83C\uDF0B", "☀\uFE0F"};
+    private final int columnNumber = 12;
+    private int currentColumn = 2;
 
     public Board() {
         this.board = new String[5][columnNumber];
@@ -28,10 +28,9 @@ public class Board {
      * Gibt das zweidimensionale Array des Spielbretts aus. Die erste Zeile besteht aus den Icons der Welten.
      */
     public void printBoard() {
-        //        String[] world = {"☁\uFE0F", "\uD83C\uDF43", "\uD83D\uDC80", "\uD83C\uDF0B", "☀\uFE0F"};
         System.out.println("----------------------------");
         for (int row = 0; row < 5; row++) {
-            System.out.print(worldString[row] + "\t");
+            System.out.print(WORLD_STRINGS[row] + "\t");
             for (int column = 0; column < 12; column++) {
                 System.out.print(this.board[row][column] + " ");
             }
@@ -46,7 +45,7 @@ public class Board {
      * @param card gespielte Handkarte
      */
     public void placeCard(Card card) throws IOException {
-        int world = card.getWorld();
+        int world = card.getWorld().ordinal();
         int number = card.getNumber();
 
         if (this.board[world][currentColumn].equals(".")) { // Prüfen, ob Feld leer ist
@@ -64,20 +63,7 @@ public class Board {
         printBoard();
     }
 
-    /**
-     * Methode, um die ResetCard zu platzieren
-     * @param world Index der Welt, in der die ResetCard gelegt werden soll.
-     */
-    private void placeCard(int world) throws IOException  {
-        if (this.board[world][currentColumn].equals(".")) { // Prüfen, ob Feld leer ist
-            this.board[world][currentColumn] = "0";         // Platziert ResetCard an der richtigen Stelle
-            // Prüft Loose-Bedingung, dass keine 0 in der Spalte liegt und setzt wenn nötig den Counter für CurrentColumn hoch
-            checkColumn();
-        } else {
-            throw new IOException("Die aktuelle Spalte muss zunächst beendet werden.");
-        }
-        printBoard();
-    }
+
 
     public void updateBoardResetCard(int world) throws IOException {
 
@@ -97,7 +83,7 @@ public class Board {
         }
     }
 
-    public void checkColumn() {
+    private void checkColumn() {
         int emptySpots = 5;
         for (int i = 0; i < 5; i++) {
             if (!this.board[i][this.currentColumn].equals(".")) {
@@ -120,6 +106,21 @@ public class Board {
                 !this.board[2][this.currentColumn].equals("0") && !this.board[3][this.currentColumn].equals("0") &&
                 !this.board[4][this.currentColumn].equals("0");
         return valid;
+    }
+
+    /**
+     * Methode, um die ResetCard zu platzieren
+     * @param world Index der Welt, in der die ResetCard gelegt werden soll.
+     */
+    private void placeCard(int world) throws IOException  {
+        if (this.board[world][currentColumn].equals(".")) { // Prüfen, ob Feld leer ist
+            this.board[world][currentColumn] = "0";         // Platziert ResetCard an der richtigen Stelle
+            // Prüft Loose-Bedingung, dass keine 0 in der Spalte liegt und setzt wenn nötig den Counter für CurrentColumn hoch
+            checkColumn();
+        } else {
+            throw new IOException("Die aktuelle Spalte muss zunächst beendet werden.");
+        }
+        printBoard();
     }
 
     // TODO Aufsteigend legen
