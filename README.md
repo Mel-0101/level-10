@@ -15,7 +15,7 @@ Photo of the physical game:<br/><br/>
 
 It's playable in the IDE.
 
-Work in progress - not all win or lose conditions are implemented yet.
+Work in progress - not lose conditions are implemented yet.
 
 More info about the game on BoardGameGeek: [Level 10](https://boardgamegeek.com/boardgame/211940/level-10)
 
