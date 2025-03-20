@@ -9,10 +9,6 @@ public class Hand {
     private final Board board;
     private final Deck deck;
 
-    public Card[] getHand() {
-        return hand;
-    }
-
     public Hand(Deck deck, Board board) {
         this.handsize = 10;
         this.deck = deck;
@@ -22,6 +18,10 @@ public class Hand {
         }
         this.sort();
         this.board = board;
+    }
+
+    public Card[] getHand() {
+        return hand;
     }
 
     public void sort() {
@@ -104,7 +104,7 @@ public class Hand {
         String array = "";
         int i = 0;
         for (Card c : this.hand) {
-            array += "["+i+"]" + c + "  ";
+            array += "[%s]%s  ".formatted(i, c);
             i++;
         }
         System.out.println("Handkarten: " + array + "\t Nachziehstapel: " + this.deck.getStackSize());

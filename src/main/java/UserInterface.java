@@ -26,13 +26,12 @@ public class UserInterface {
     }
 
     public void readInput(){
-        String inputStr = "";
-        //        String ausgabe;
+        String inputStr;
         while( true ){
             System.out.println();
-            System.out.print("Spiele eine Handkarte (Index 0...9) oder eine Reset Card (R0...R4): ");
+            System.out.print("Spiele eine Handkarte (Index 0...9) oder eine Reset Card (R0...R4) oder : ");
             inputStr = this.scan.nextLine();
-            if(inputStr.equals("beenden")) {
+            if(inputStr.strip().equalsIgnoreCase("beenden")) {
                 System.out.println("Das Spiel wird nun beendet");
                 break;
             } else {

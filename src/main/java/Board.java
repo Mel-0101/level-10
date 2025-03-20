@@ -30,10 +30,10 @@ public class Board {
     public void printBoard() {
         //        String[] world = {"☁\uFE0F", "\uD83C\uDF43", "\uD83D\uDC80", "\uD83C\uDF0B", "☀\uFE0F"};
         System.out.println("----------------------------");
-        for (int zeile = 0; zeile < 5; zeile++) {
-            System.out.print(worldString[zeile] + "\t");
-            for (int spalte = 0; spalte < 12; spalte++) {
-                System.out.print(this.board[zeile][spalte] + " ");
+        for (int row = 0; row < 5; row++) {
+            System.out.print(worldString[row] + "\t");
+            for (int column = 0; column < 12; column++) {
+                System.out.print(this.board[row][column] + " ");
             }
             System.out.println();
         }

@@ -19,7 +19,6 @@ public class Deck {
             deck[i+24] = new Card(3, number); // Volcano - 3
             deck[i+32] = new Card(4, number); // Desert - 4
         }
-
         this.next = 0;
     }
 
@@ -36,7 +35,7 @@ public class Deck {
             int rand = randomNumber.nextInt(0,40);
 
             // Swap cards in deck
-            Card temp = deck[card]; // Card from random position
+            Card temp = deck[card];
             deck[card] = deck[rand];
             deck[rand] = temp;
         }
