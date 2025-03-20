@@ -1,10 +1,12 @@
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class Hand {
 
-    private final Card[] hand;
+    private final ArrayList<Card> hand;
     private final int handsize;
     private final Board board;
     private final Deck deck;
@@ -12,67 +14,36 @@ public class Hand {
     public Hand(Deck deck, Board board) {
         this.handsize = 10;
         this.deck = deck;
-        this.hand = new Card[handsize];
+        this.hand = new ArrayList<>();
         for (int i = 0; i < handsize; i++) {
-            this.hand[i] = deck.draw();
+            this.hand.add(deck.draw());
         }
         this.sort();
         this.board = board;
     }
 
-    public Card[] getHand() {
-        return hand;
-    }
-
     public void sort() {
-
-        Card temp;
-
-        // Sortieren nach Welten
-        for (int n = handsize; n > 1; n--){
-            for (int i = 0; i < n-1; i++) {
-                if (this.hand[i].getWorld() > this.hand[i+1].getWorld()) {
-                    temp = this.hand[i];
-                    this.hand[i] = this.hand[i+1];
-                    this.hand[i+1] = temp;
-                }
-            }
-        }
-        // Sortieren nach Nummern
-        for (int n = handsize; n > 1; n--){
-            for (int i = 0; i < n-1; i++) {
-                if (this.hand[i].getWorld() == this.hand[i+1].getWorld()) {
-                    if (this.hand[i].getNumber() > this.hand[i + 1].getNumber()) {
-                        temp = this.hand[i];
-                        this.hand[i] = this.hand[i + 1];
-                        this.hand[i + 1] = temp;
-                    }
-                }
-            }
-        }
+        this.hand.sort(Comparator.comparing(Card::getWorld).thenComparingInt(Card::getNumber));
     }
 
 
     // TODO Gewonnen/Verloren
 
     public void playCard(int index) throws IOException {
-        if (index >= 0 && index < this.hand.length) {
-            Card card = this.hand[index];
-            // System.out.println("Spiele Karte: " + card); <- ist jetzt in board.placeCard()
+        if (index >= 0 && index < this.hand.size()) {
             // Methode placeCard aufrufen und Karte übergeben
-            this.board.placeCard(card);
+            this.board.placeCard(this.hand.remove(index));
             // neue Karte ziehen und alte ersetzen, falls der Stapel noch Karten hat
             if (this.deck.getStackSize() > 0) {
-                this.hand[index] = this.deck.draw();
-                System.out.println("Neu gezogen: " + this.hand[index]);
+                var newCard = this.deck.draw();
+                this.hand.add(newCard);
+                System.out.println("Neu gezogen: " + newCard);
                 // Handkarten sortieren
                 this.sort();
             } else {
                 System.err.println("Der Stapel ist leer");
-                this.hand[index] = null;
             }
-        }
-        else {
+        } else {
             System.err.println("Ungültiger Index.");
         }
         // Handkarten anzeigen
@@ -80,21 +51,19 @@ public class Hand {
     }
 
     public void playResetCard(int world, int... index) throws IOException {
-        System.out.println("Spiele ResetCard: " + this.board.worldString[world]);
+        System.out.println("Spiele ResetCard: " + Board.WORLD_STRINGS[world]);
 
         this.board.updateBoardResetCard(world);
 
-        // für jede abgelegte Handkarte wird die Methode updateDeck aufgerufen und die Handkarte übergeben
         for (int i : index) {
-            System.out.println("Lege Karte ab: " + this.hand[i]);
-            this.deck.updateDeck(this.hand[i]);
+            Card exchangedCard = this.hand.remove(i);
+            System.out.println("Lege Karte ab: " + exchangedCard);
+            Card newCard = this.deck.exchangeCard(exchangedCard);
+            this.hand.add(newCard);
+            System.out.println("Neu gezogen: " + newCard);
         }
-        // für jede abgelegte Handkarte wird eine neue Karte gezogen
-        for (int i : index) {
-            this.hand[i] = this.deck.draw();
-            System.out.println("Neu gezogen: " + this.hand[i]);
-            this.sort();
-        }
+
+        this.sort();
         // Handkarten sortieren
         this.showHandStack();
         this.board.printBoard();
@@ -113,6 +82,6 @@ public class Hand {
 
     @Override
     public String toString() {
-        return Arrays.toString(hand);
+        return this.hand.toString();
     }
 }
