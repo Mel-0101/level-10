@@ -2,127 +2,128 @@
 import java.io.IOException;
 
 public class Board {
+    public boolean isWinning = true;
     private final String[][] board;
-    public static final String[] WORLD_STRINGS = {"☁\uFE0F", "\uD83C\uDF43", "\uD83D\uDC80", "\uD83C\uDF0B", "☀\uFE0F"};
-    private final int columnNumber = 12;
-    private int currentColumn = 2;
+    private static final int COLUMNS = 12;
+    private static final int ROWS = 5;
+    private int currentColumn = 2;  // Start-Wert
 
     public Board() {
-        this.board = new String[5][columnNumber];
+        this.board = new String[ROWS][COLUMNS];
 
-        // Befüllt das Array mit je zwei Nullen ganz vorne
-        for (int row = 0; row < 5; row++) {
+        // Puts zeros in the first two columns
+        for (int row = 0; row < ROWS; row++) {
             for (int column = 0; column < 2; column++) {
                 this.board[row][column] = "0";
             }
         }
-        // Befüllt das Array auf den weiteren Plätzen mit "."
-        for (int row = 0; row < 5; row++) {
-            for (int column = 2; column < columnNumber; column++) {
+        // Fills rest of the array with placeholder "."
+        for (int row = 0; row < ROWS; row++) {
+            for (int column = 2; column < COLUMNS; column++) {
                 this.board[row][column] = ".";
             }
         }
     }
 
-    /**
-     * Gibt das zweidimensionale Array des Spielbretts aus. Die erste Zeile besteht aus den Icons der Welten.
-     */
     public void printBoard() {
         System.out.println("----------------------------");
-        for (int row = 0; row < 5; row++) {
-            System.out.print(WORLD_STRINGS[row] + "\t");
-            for (int column = 0; column < 12; column++) {
-                System.out.print(this.board[row][column] + " ");
+        // Iterates through the five Worlds and prints the corresponding symbol in the first column
+        for (World w : World.values()) {
+            System.out.print(w.getSymbol() + "\t");
+            for (int column = 0; column < COLUMNS; column++) {
+                System.out.print(this.board[w.ordinal()][column] + " ");
             }
             System.out.println();
         }
         System.out.println("----------------------------");
-
     }
 
     /**
-     * Überladene Methode, um eine Handkarte zu platzieren
-     * @param card gespielte Handkarte
+     * Overloaded method for placing card from hand.
+     *
+     * @param card played hand card
+     * @throws IOException
      */
     public void placeCard(Card card) throws IOException {
         int world = card.getWorld().ordinal();
         int number = card.getNumber();
 
-        if (this.board[world][currentColumn].equals(".")) { // Prüfen, ob Feld leer ist
-            if (Integer.parseInt(this.board[world][currentColumn - 1]) < number) {
-                this.board[world][currentColumn] = String.valueOf(number); // Platziert Karte an der richtigen Stelle
-                // Prüft Lose-Bedingung, dass keine 0 in der Spalte liegt und setzt wenn nötig den Counter für CurrentColumn hoch
-                checkColumn();
+        if (this.board[world][currentColumn].equals(".")) { // check if corresponding field is empty
+            if (Integer.parseInt(this.board[world][currentColumn - 1]) < number) {  // check if new placed card is higher than previous card
+                this.board[world][currentColumn] = String.valueOf(number);
+                checkColumn();  // check if column is finished or if the game is lost
             } else {
-                throw new IOException("Die Karten müssen aufsteigend gespielt werden!");
+                throw new IOException("Cards must be played in ascending order.");
             }
         } else {
-            throw new IOException("Für diese Welt liegt in dieser Spalte bereits eine Karte!");
+            throw new IOException("There is already a card for this world in this column.");
         }
-        System.out.println("Spiele Karte: " + card);
+        System.out.println("Played card: " + card);
         printBoard();
     }
 
-
-
-    public void updateBoardResetCard(int world) throws IOException {
-
-        if (this.board[world][0].equals("0")){
+    /**
+     * Checks if there are still Reset Cards for the chosen worlds available and then moves it to the current column
+     * by calling the method {@link #placeCard(int)}.
+     * @param world chosen world/row
+     * @throws IOException
+     */
+    public void updateBoardWithResetCard(int world) throws IOException {
+        if (this.board[world][0].equals("0")) {
             this.board[world][0] = ".";
-
-            // Methodenaufruf: Platziere ResetCard
             placeCard(world);
-        }
-        else if (this.board[world][1].equals("0")){
+        } else if (this.board[world][1].equals("0")) {
             this.board[world][1] = ".";
-            // Methodenaufruf: Platziere ResetCard
             placeCard(world);
-        }
-        else {
-            System.err.println("Keine ResetCard für diese Welt mehr verfügbar.");
+        } else {
+            System.err.println("No more Reset Cards available for this world.");
         }
     }
 
+    public boolean canPlaceResetCard() {
+        return !this.board[0][this.currentColumn].equals("0") && !this.board[1][this.currentColumn].equals("0") &&
+                !this.board[2][this.currentColumn].equals("0") && !this.board[3][this.currentColumn].equals("0") &&
+                !this.board[4][this.currentColumn].equals("0");
+    }
+
+    /**
+     * Overloaded method for placing Reset Card.
+     *
+     * @param world row in which the Reset Card is played
+     * @throws IOException
+     */
+    private void placeCard(int world) throws IOException {
+        if (this.board[world][currentColumn].equals(".")) { // check if corresponding field is empty
+            this.board[world][currentColumn] = "0";         // check if new placed card is higher than previous card
+            checkColumn(); // check if column is finished or if the game is lost
+        } else {
+            throw new IOException("The current column must be finished first.");
+        }
+    }
+
+    /**
+     * Checks if the current column is finished - then raises <i>currentColumn</i>.
+     * Additionally, checks if the game is lost through a missing Reset Card.
+     */
     private void checkColumn() {
         int emptySpots = 5;
-        for (int i = 0; i < 5; i++) {
-            if (!this.board[i][this.currentColumn].equals(".")) {
+        for (int row = 0; row < ROWS; row++) {
+            if (!this.board[row][this.currentColumn].equals(".")) {
                 emptySpots--;
             }
             if (emptySpots == 0) {
                 if (!this.board[0][this.currentColumn].equals("0") && !this.board[1][this.currentColumn].equals("0") &&
                         !this.board[2][this.currentColumn].equals("0") && !this.board[3][this.currentColumn].equals("0") &&
                         !this.board[4][this.currentColumn].equals("0")) {
-                    System.err.println("Es fehlt eine 0 in der aktuellen Spalte. Du hast verloren!");
+                    System.err.println("There is a Reset Card missing in the current column. You lost the game.");
+                    lost();
                 }
                 this.currentColumn++;
             }
         }
     }
 
-    public boolean checkResetCards() {
-        // return true, wenn ich keiner Zeile der aktuellen Spalte eine 0 liegt.
-        boolean valid = !this.board[0][this.currentColumn].equals("0") && !this.board[1][this.currentColumn].equals("0") &&
-                !this.board[2][this.currentColumn].equals("0") && !this.board[3][this.currentColumn].equals("0") &&
-                !this.board[4][this.currentColumn].equals("0");
-        return valid;
+    private void lost() {
+        this.isWinning = false;
     }
-
-    /**
-     * Methode, um die ResetCard zu platzieren
-     * @param world Index der Welt, in der die ResetCard gelegt werden soll.
-     */
-    private void placeCard(int world) throws IOException  {
-        if (this.board[world][currentColumn].equals(".")) { // Prüfen, ob Feld leer ist
-            this.board[world][currentColumn] = "0";         // Platziert ResetCard an der richtigen Stelle
-            // Prüft Loose-Bedingung, dass keine 0 in der Spalte liegt und setzt wenn nötig den Counter für CurrentColumn hoch
-            checkColumn();
-        } else {
-            throw new IOException("Die aktuelle Spalte muss zunächst beendet werden.");
-        }
-        printBoard();
-    }
-
-    // TODO Aufsteigend legen
-    // TODO Spalten-Check bevor Karten gezogen werden
 }

@@ -1,7 +1,6 @@
 
 import java.util.*;
 
-
 public class Deck {
 
     private final ArrayList<Card> deck;
@@ -29,9 +28,13 @@ public class Deck {
         } else return null;
     }
 
+    /**
+     * Places the discarded card under the card deck and draws a new one into hand.
+     * @param card discarded card
+     * @return new drawn card
+     */
     public Card exchangeCard(Card card) {
         this.deck.addLast(card);
-
         return draw();
     }
 

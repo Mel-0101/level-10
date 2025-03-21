@@ -5,118 +5,96 @@ import java.util.Scanner;
 public class UserInterface {
     private final Scanner scan;
     private final Board board;
-    private final Deck deck;
     private final Hand hand;
 
     public UserInterface() {
         this.scan = new Scanner(System.in);
 
-        // Erzeugen & Ausgeben des Spielfelds
         this.board = new Board();
         this.board.printBoard();
 
-        // Erzeugen & Mischen des Nachziehstapels
-        this.deck = new Deck();
+        Deck deck = new Deck();
 
-        // Erzeugen & Sortieren der Starthand
-        this.hand = new Hand(this.deck, this.board);
-        //        System.out.println("Handkarten: " + this.hand);
-        this.hand.showHandStack();
+        this.hand = new Hand(deck, this.board);
+        this.hand.printHand();
     }
 
-    public void readInput(){
-        String inputStr;
-        while( true ){
+    public void readInput() {
+        String inputString;
+        while (this.board.isWinning) {
             System.out.println();
-            System.out.print("Spiele eine Handkarte (Index 0...9) oder eine Reset Card (R0...R4): ");
-            inputStr = this.scan.nextLine();
-            if(inputStr.strip().equalsIgnoreCase("beenden")) {
-                System.out.println("Das Spiel wird nun beendet");
+            System.out.print("Play a hand card in ascending order (index 0...9) or a Reset Card (R0...R4) or type quit: ");
+            inputString = this.scan.nextLine();
+            if (inputString.strip().equalsIgnoreCase("quit")) {
                 break;
             } else {
-                analyzeInput(inputStr);
+                analyzeInput(inputString);
             }
-            //            try{
-            //                analysiereEingabe(eingabe);
-            //                if(ausgabe.equals("beenden")){
-            //                    System.out.println("Das Programm wird nun beendet");
-            //                    break;
-            //                }else{
-            //                    System.out.println(ausgabe);
-            //                }
-            //            }catch(Exception e){
-            //                System.out.println(e.getMessage());
-            //            }
         }
     }
 
-    public void analyzeInput(String input) {
+    public void closeProgram() {
+        if (this.scan != null) {
+            this.scan.close();
+        }
+    }
+
+    private void analyzeInput(String input) {
         switch (input) {
-            case "0","1","2","3","4","5","6","7","8","9":
+            case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" -> {
                 int index = Integer.parseInt(input);
                 try {
                     this.hand.playCard(index);
+                } catch (IOException e) {
+                    System.err.println((e.getMessage()));
                 }
-                catch (IOException e) {
-                    System.out.println(e.getMessage());
-                }
-                break;
-            case "R0", "R1", "R2", "R3", "R4":
+            }
+            case "R0", "R1", "R2", "R3", "R4" -> {
                 int world = Integer.parseInt(input.substring(1));
-                if (this.board.checkResetCards()) { // in keiner Spalte eine 0?
+                if (this.board.canPlaceResetCard()) { // no Reset Card played in current column?
                     try {
-                        analyzeResetCard(world);
-                        scan.nextLine(); // Um ein Enter abzufangen
+                        processResetCard(world);
+                        scan.nextLine(); // to catch an Enter
                     } catch (IOException | IndexOutOfBoundsException e) {
-                        System.out.println(e.getMessage());
+                        System.err.println((e.getMessage()));
                     }
                 } else {
-                    System.err.println("Du darfst keine ResetCard legen, wenn in dieser Spalte bereits eine liegt!");
+                    System.err.println("You may not place a reset card if there is already one in the current column.");
                 }
-                break;
-            default:
-                System.err.println("Keine gültige Eingabe!");
-                break;
+            }
+            default -> System.err.println("Invalid input.");
         }
     }
 
-    public void analyzeResetCard(int world) throws IOException, IndexOutOfBoundsException {
-        System.out.print("Wähle eine Anzahl von 0-2 Handkarten, die du austauschen möchtest: ");
+    private void processResetCard(int world) throws IOException, IndexOutOfBoundsException {
+        System.out.print("Choose a number of 0-2 cards from your hand that you want to place under the pile and " +
+                "for which you will draw new cards: ");
         int cardsNumber = this.scan.nextInt();
 
         switch (cardsNumber) {
-            case 0:
-                this.hand.playResetCard(world);
-                break;
-            case 1:
-                System.out.println("Wähle die Handkarte (Index 0..9): ");
+            case 0 -> this.hand.playResetCard(world);
+            case 1 -> {
+                System.out.println("Chose the hand card you want to discard (Index 0..9): ");
                 int index = this.scan.nextInt();
                 if (index >= 0 && index < 10) {
                     this.hand.playResetCard(world, index);
                 } else {
-                    throw new IndexOutOfBoundsException("Der Index muss zwischen 0 und 9 liegen!");
+                    throw new IndexOutOfBoundsException("The index must be between 0 and 9.");
                 }
-                break;
-            case 2:
-                System.out.println("Wähle die zwei Handkarten (Index 0..9): ");
+            }
+            case 2 -> {
+                System.out.println("Chose the two hand cards you want to discard (Index 0..9): ");
                 int index1 = this.scan.nextInt();
                 int index2 = this.scan.nextInt();
                 if ((index1 >= 0 && index1 < 10) && (index2 >= 0 && index2 < 10)) {
                     this.hand.playResetCard(world, index1, index2);
                 } else {
-                    throw new IndexOutOfBoundsException("Der Index muss zwischen 0 und 9 liegen!");
+                    throw new IndexOutOfBoundsException("The index must be between 0 and 9.");
                 }
-                break;
-            default:
-                System.err.println("Keine gültige Eingabe!");
-                break;
+            }
+            default -> System.err.println("Invalid input.");
         }
     }
-
-    public void closeProgram(){
-        if(this.scan != null ){
-            this.scan.close();
-        }
-    }
-
 }
+
+

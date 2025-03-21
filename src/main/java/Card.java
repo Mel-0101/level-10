@@ -3,9 +3,7 @@
 public class Card {
 
     private final World world;
-
-    // 1-8
-    private final int number;
+    private final int number;   // 1-8
 
     public Card(World world, int number) {
         this.world = world;

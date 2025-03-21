@@ -4,8 +4,6 @@ public class Main {
 
         UserInterface ui = new UserInterface();
         ui.readInput();
-
         ui.closeProgram();
-
     }
 }
