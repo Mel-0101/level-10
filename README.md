@@ -5,6 +5,9 @@ The solo-mode of the cooperative card game Level 10 implemented in Java.
 <img width="783" alt="Screenshot of the game in the IDE" src="https://github.com/user-attachments/assets/e285997a-1da0-4808-bd17-5255ceccdfe9" />
 <br/>
 <br/>
+
+Level 10 is made by designer Hisashi Hayashi with artwork by Francisco Coda and Ryo Nyamo.
+
 <i>In Level 10, you try to help Izzy play through all ten levels in each of five different video game worlds; each world is represented by a row of cards on the table. Players will play cards one by one to this 5x10 grid - 40 level cards and 10 reset cards - to (hopefully) complete the game. 
 If a player cannot play a card on their turn, the players (and Izzy) lose.</i>
 <br/><br/>
