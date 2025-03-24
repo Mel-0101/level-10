@@ -2,7 +2,7 @@
 
 The solo-mode of the cooperative card game Level 10 implemented in Java.
 
-<img width="783" alt="Screenshot of the game in the IDE" src="https://github.com/user-attachments/assets/e285997a-1da0-4808-bd17-5255ceccdfe9" />
+<img width="771" alt="Screenshot of the game in the IDE" src="https://github.com/user-attachments/assets/eee78cbf-1b60-4059-b6ed-59b25053d8a1" />
 <br/>
 <br/>
 
