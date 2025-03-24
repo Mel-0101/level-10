@@ -23,7 +23,10 @@ public class UserInterface {
         String inputString;
         while (this.board.isWinning) {
             System.out.println();
-            System.out.print("Play a hand card in ascending order (index 0...9) or a Reset Card (R0...R4) or type quit: ");
+            System.out.printf("Play a hand card in ascending order (index 0...9) or a Reset Card " +
+                    "(R0=%s|R1=%s|R2=%s|R3=%s|R4=%s) or type quit: ",
+                    World.SKY.getSymbol(), World.FOREST.getSymbol(), World.SWAMP.getSymbol(),
+                    World.VOLCANO.getSymbol(), World.DESERT.getSymbol());
             inputString = this.scan.nextLine();
             if (inputString.strip().equalsIgnoreCase("quit")) {
                 break;
@@ -74,7 +77,7 @@ public class UserInterface {
         switch (cardsNumber) {
             case 0 -> this.hand.playResetCard(world);
             case 1 -> {
-                System.out.println("Chose the hand card you want to discard (Index 0..9): ");
+                System.out.println("Choose the hand card you want to discard (Index 0..9): ");
                 int index = this.scan.nextInt();
                 if (index >= 0 && index < 10) {
                     this.hand.playResetCard(world, index);
@@ -83,7 +86,7 @@ public class UserInterface {
                 }
             }
             case 2 -> {
-                System.out.println("Chose the two hand cards you want to discard (Index 0..9): ");
+                System.out.println("Choose the two hand cards you want to discard (Index 0..9): ");
                 int index1 = this.scan.nextInt();
                 int index2 = this.scan.nextInt();
                 if ((index1 >= 0 && index1 < 10) && (index2 >= 0 && index2 < 10)) {
